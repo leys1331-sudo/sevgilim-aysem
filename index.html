@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<title>💖 Oyun</title>
+</head>
+
+<body style="font-family:sans-serif; text-align:center;">
+
+<!-- 🔒 GİRİŞ -->
+<div id="giris">
+  <h2>Şifre gir 💕</h2>
+  <input type="password" id="sifre">
+  <button onclick="giris()">Giriş</button>
+</div>
+
+<!-- 💖 OYUN -->
+<div id="icerik" style="display:none;">
+
+  <h2 id="soru"></h2>
+  <input id="cevap">
+  <button onclick="gonder()">Gönder</button>
+
+  <p>🪙 Jeton: <span id="jeton">0</span></p>
+
+  <h3>Kızı bul 💕</h3>
+  <div id="oyun"></div>
+
+</div>
+
+<!-- 💌 FINAL -->
+<div id="final" style="
+display:none;
+position:fixed;
+top:0; left:0;
+width:100%; height:100%;
+background:pink;
+text-align:center;
+padding-top:20%;
+font-size:22px;
+z-index:9999;
+">
+<h1>Teşekkür ederim 💕</h1>
+<p>Seni seviyorum ❤️</p>
+<p>Bu siteyi senin için yaptım 🥰</p>
+</div>
+
+<script>
+
+// 🔒 şifre
+function giris() {
+  let sifre = document.getElementById("sifre").value;
+
+  if (sifre === "ayşem") {
+    document.getElementById("giris").style.display = "none";
+    document.getElementById("icerik").style.display = "block";
+  } else {
+    alert("Yanlış şifre 😅");
+  }
+}
+
+// ❓ sorular
+let sorular = [
+  "Beni seviyon mu? ❤️",
+  "En sevdiğin anımız ne? 🥰",
+  "Benim en sevdiğim özelliğim ne? 💕"
+];
+
+let index = 0;
+
+// 🪙 jeton
+let jeton = localStorage.getItem("jeton") || 0;
+document.getElementById("jeton").innerText = jeton;
+document.getElementById("soru").innerText = sorular[index];
+
+// 💾 cevap
+function gonder() {
+  let cevap = document.getElementById("cevap").value;
+
+  let cevaplar = JSON.parse(localStorage.getItem("cevaplar")) || [];
+  cevaplar.push({ soru: sorular[index], cevap: cevap });
+  localStorage.setItem("cevaplar", JSON.stringify(cevaplar));
+
+  jeton++;
+  localStorage.setItem("jeton", jeton);
+  document.getElementById("jeton").innerText = jeton;
+
+  index++;
+
+  if (index < sorular.length) {
+    document.getElementById("soru").innerText = sorular[index];
+    document.getElementById("cevap").value = "";
+  } else {
+    oyunBaslat();
+  }
+}
+
+// 🎮 kızı bul oyunu
+let dogru;
+
+function oyunBaslat() {
+  document.getElementById("soru").innerText = "Oyun başladı 💖";
+  document.getElementById("cevap").style.display = "none";
+
+  dogru = Math.floor(Math.random() * 6);
+
+  let oyun = document.getElementById("oyun");
+  oyun.innerHTML = "";
+
+  for (let i = 0; i < 6; i++) {
+    let b = document.createElement("button");
+    b.innerText = "❓";
+    b.style.margin = "5px";
+    b.style.fontSize = "20px";
+
+    b.onclick = function (e) {
+
+      // 💖 kalp
+      let k = document.createElement("div");
+      k.innerText = "💖";
+      k.style.position = "fixed";
+      k.style.left = e.clientX + "px";
+      k.style.top = e.clientY + "px";
+      document.body.appendChild(k);
+      setTimeout(() => k.remove(), 1000);
+
+      if (i === dogru) {
+        b.innerText = "👧";
+
+        jeton++;
+        localStorage.setItem("jeton", jeton);
+        document.getElementById("jeton").innerText = jeton;
+
+        alert("Aferim 💖");
+
+        // 💌 final
+        setTimeout(() => {
+          document.getElementById("final").style.display = "block";
+        }, 500);
+
+      } else {
+        b.innerText = "❌";
+      }
+    };
+
+    oyun.appendChild(b);
+  }
+}
+
+</script>
+
+</body>
+</html>
